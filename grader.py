@@ -32,7 +32,6 @@ if not isdir(data_path):
 	exit(0)
 
 # Exit if the data path does not contain the data for the requested problem
-print join(data_path, args.problem)
 if not isdir(join(data_path, args.problem)):
 	print "Could not find problem " + args.year + "/"+ args.problem
 	exit(2)
