@@ -22,7 +22,7 @@ if not isfile(args.source):
 
 # Set the data path
 if args.data_path == None:
-	data_path = join("data", args.year)
+	data_path = "data"
 else:
 	data_path = args.data_path
 
@@ -32,13 +32,16 @@ if not isdir(data_path):
 	exit(0)
 
 # Exit if the data path does not contain the data for the requested problem
-if not isdir(join(data_path, args.problem)):
+if not isdir(join(data_path, args.year, args.problem)):
 	print "Could not find problem " + args.year + "/"+ args.problem
 	exit(2)
 
+# Path to the data files for the requested problem and year
+data_files_path = join(data_path, args.year, args.problem)
+
 # Create a list of input/output file pairs
 data_path = join(data_path, args.problem)
-files = [f for f in listdir(data_path) if isfile(join(data_path, f))]
+files = [f for f in listdir(data_files_path) if isfile(join(data_files_path, f))]
 files.sort()
 io_file_pairs = []
 for f in files:
@@ -51,7 +54,7 @@ for f in files:
 
 # Execute all tests
 for i in io_file_pairs:
-	input_info = Popen(("cat", join(data_path, i[0])), stdout=PIPE)
+	input_info = Popen(("cat", join(data_files_path, i[0])), stdout=PIPE)
 	
 	if args.no_timeout:
 		command = ["python", args.source]
@@ -70,7 +73,7 @@ for i in io_file_pairs:
 		else:
 			print i[0] + " ERROR"
 		continue
-	expected_output = check_output(("cat", join(data_path, i[1])))
+	expected_output = check_output(("cat", join(data_files_path, i[1])))
 	if received_output == expected_output:
 		print i[0] + " PASS"
 	else:
